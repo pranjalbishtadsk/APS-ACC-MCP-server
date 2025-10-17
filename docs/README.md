@@ -35,7 +35,7 @@ Key benefits:
 
 In this tutorial, you'll implement an MCP server that exposes the following tools to AI assistants:
 
-1. **Get Accounts & Projects** - Retrieve all ACC accounts and projects accessible to your service account
+1. **Get Projects** - Retrieve all ACC accounts and projects accessible to your service account
 2. **Get Folder Contents** - Browse folders and files in an ACC project
 3. **Get Issues** - List all issues in an ACC project
 4. **Get Issue Types** - Retrieve available issue types for a project
