@@ -400,9 +400,27 @@ SSA_KEY_PATH="/Users/brozp/aps-mcp-server-nodejs/8a4ee790-3378-44f3-bbab-5acb35e
 }
 ```
 
-- Open Claude Desktop, and try some of the following test prompt:
+- Restart Claude Desktop and verify the server is running in **Settings** → **Developer**:
+
+![Claude Desktop MCP Server Configuration](screenshots/Settings.png)
+
+- Open Claude Desktop, and try some of the following test prompts:
   - What ACC projects do I have access to?
   - Give me a visual dashboard of all issues in project XYZ
+  - List all issues in my project
+  - Show me the folder structure
+
+**Example: Visual Dashboard Generation**
+
+Claude can create interactive visualizations and dashboards from your ACC data:
+
+![Claude Dashboard Visualization](screenshots/issue%20dashboard.png)
+
+The MCP server enables Claude to:
+- Query real-time project data from ACC
+- Generate visual dashboards with issue statistics
+- Create charts showing issues by type, status, and more
+- Provide detailed project insights through natural conversation
 
 > For more details on how to add MCP servers to Claude Desktop, see the [official documentation](https://modelcontextprotocol.io/quickstart/user).
 
