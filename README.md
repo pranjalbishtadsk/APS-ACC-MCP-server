@@ -29,7 +29,7 @@ The Model Context Protocol (MCP) creates a standardized way for AI assistants to
 
 ### Available MCP Tools
 
-This server provides 4 tools that AI assistants can use:
+This server provides 6 tools that AI assistants can use:
 
 | Tool | Description | Parameters | Returns |
 |------|-------------|------------|---------|
@@ -37,6 +37,8 @@ This server provides 4 tools that AI assistants can use:
 | **getFolderContentsTool** | Browses folder and file structure within a project | `accountId`, `projectId`, `folderId` (optional) | List of folders and files with IDs and display names |
 | **getIssuesTool** | Fetches all issues from a project | `projectId` | List of issues with IDs, titles, statuses, types, assignments, due dates, and 3D coordinates |
 | **getIssueTypesTool** | Gets available issue types and subtypes | `projectId` | List of issue types with subtypes (for issue classification) |
+| **createIssueTool** | Creates a new issue in a project | `projectId`, `title`, `issueSubtypeId`, `status`, and many optional fields | Created issue with full details including ID, display ID, and timestamps |
+| **getIssueDetailsTool** | Retrieves detailed information about a specific issue | `projectId`, `issueId`, `includeComments` (optional), `includeAttachments` (optional) | Complete issue details including description, assignee, dates, location, comments, attachments, custom attributes, and audit trail |
 
 ### VS Code MCP Client Integration
 
@@ -56,7 +58,13 @@ You: "What projects do I have access to?"
 Copilot: [calls getProjectsTool] → "You have 1 project: Construction: Sample Project..."
 
 You: "List all issues"
-Copilot: [calls getIssuesTool with projectId] → "You have 2 open issues..."
+Copilot: [calls getIssuesTool with projectId] → "You have 3 open issues..."
+
+You: "Show me details of issue abc123"
+Copilot: [calls getIssueDetailsTool] → "Issue: Concrete Surface Finish... Status: Open..."
+
+You: "Create a new issue for the Level 2 rework"
+Copilot: [calls createIssueTool] → "✅ Issue created successfully! ID: xyz789..."
 ```
 
 ### Comparison with ACC Native Features
@@ -67,13 +75,13 @@ Copilot: [calls getIssuesTool with projectId] → "You have 2 open issues..."
 | **Query Interface** | GUI navigation | Conversational AI | Conversational AI |
 | **Integration** | Standalone app | Standalone app | Embedded in VS Code/Claude/Cursor |
 | **Authentication** | User login | User login | Service Account (programmatic) |
-| **Data Access** | Full ACC features | Limited to conversation context | API-based (read access) |
+| **Data Access** | Full ACC features | Limited to conversation context | API-based (read and write access) |
 | **Customization** | Fixed UI | Fixed AI behavior | Custom tools & scripts |
 | **Use Case** | Manual project management | Quick queries & assistance | Developer workflows & automation |
 | **Multi-Project** | Switch between projects | Context limited | Access all authorized projects |
 | **Offline Mode** | ❌ No | ❌ No | ❌ No (requires API) |
-| **File Upload** | ✅ Yes | ✅ Yes | ❌ No (read-only) |
-| **Issue Creation** | ✅ Yes | ✅ Yes | ❌ No (not implemented yet) |
+| **File Upload** | ✅ Yes | ✅ Yes | ❌ No (read-only for files) |
+| **Issue Creation** | ✅ Yes | ✅ Yes | ✅ Yes (implemented) |
 | **Real-time Collaboration** | ✅ Yes | Limited | ❌ No |
 
 **Key Differences:**
@@ -165,6 +173,8 @@ Freelancers building APS solutions:
 "List all open issues across projects"
 "Show me projects with issues overdue by more than 7 days"
 "What are the most common issue types?"
+"Get detailed information for issue abc123"
+"Create a new issue for the concrete rework on Level 2"
 ```
 
 **Value**: Quick health checks without building custom reporting tools
@@ -180,6 +190,12 @@ Copilot: [Returns actual issue types from customer's project]
 Developer: "Show me all issues created in the last 24 hours"
 Copilot: [Returns recent issues with details]
 
+Developer: "Get full details for issue abc123"
+Copilot: [Shows complete issue information including comments and attachments]
+
+Developer: "Create a test issue to verify the API"
+Copilot: [Creates issue and returns confirmation with issue ID]
+
 Developer: "What's the folder structure of this project?"
 Copilot: [Shows actual folder hierarchy]
 ```
@@ -194,6 +210,8 @@ Copilot: [Shows actual folder hierarchy]
 "Show me the folder structure of all projects"
 "What custom fields are configured for issues?"
 "List all file types in the project"
+"Get a sample issue with all its fields to understand the data structure"
+"Create a test issue to validate the target system can receive ACC data"
 ```
 
 **Value**: Understand target system structure before migration scripting
@@ -204,7 +222,10 @@ Copilot: [Shows actual folder hierarchy]
 **Interactive Learning**:
 ```
 Trainee: "What data can I get from an issue?"
-Copilot: [Shows real issue structure with actual data]
+Copilot: [Shows real issue structure with actual data using getIssueDetailsTool]
+
+Trainee: "How do I create an issue?"
+Copilot: [Demonstrates with createIssueTool showing required and optional fields]
 
 Trainee: "How are folders organized?"
 Copilot: [Demonstrates with live project data]
@@ -247,7 +268,8 @@ Development Phase:
 "Show project metadata" → Validate connection
 
 Testing Phase:
-"Create test issue" (future feature) → Validate round-trip
+"Create test issue" → Validate write operations
+"Get issue details" → Verify data completeness
 "List recent changes" → Verify sync accuracy
 ```
 
@@ -271,22 +293,29 @@ Testing Phase:
 
 ### 🚀 Future Expansion Opportunities
 
-**Planned Enhancements** (not yet implemented):
-1. **Write Operations**: Create/update issues, upload files
-2. **Advanced Queries**: Filter, sort, aggregate data
-3. **Multi-Project Operations**: Bulk queries across projects
-4. **Webhooks Integration**: Real-time notifications in IDE
-5. **Cost Management**: Query budget and cost data
-6. **Schedule Data**: Access project timelines and milestones
-7. **RFI Management**: Query and manage RFIs
-8. **Document Management**: Search and analyze documents
+**Planned Enhancements**:
+1. ✅ **Issue Creation** - Create new issues (IMPLEMENTED)
+2. ✅ **Issue Details** - Get detailed issue information (IMPLEMENTED)
+3. ⏳ **Issue Updates** - Update existing issues (IN PROGRESS)
+4. ⏳ **Issue Comments** - Add comments to issues (IN PROGRESS)
+5. ⏳ **Issue Attachments** - Upload files to issues (IN PROGRESS)
+6. 🔜 **Advanced Queries**: Filter, sort, aggregate data
+7. 🔜 **Multi-Project Operations**: Bulk queries across projects
+8. 🔜 **File Operations**: Upload/download files
+9. 🔜 **Webhooks Integration**: Real-time notifications in IDE
+10. 🔜 **Cost Management**: Query budget and cost data
+11. 🔜 **Schedule Data**: Access project timelines and milestones
+12. 🔜 **RFI Management**: Query and manage RFIs
+13. 🔜 **Document Management**: Search and analyze documents
 
 **Extended Use Cases**:
+- ✅ Issue creation from natural language descriptions
 - Automated issue creation from code comments
 - Project health dashboards in IDE
 - Compliance checking and reporting
 - Automated status updates to stakeholders
 - Integration testing frameworks
+- Detailed issue analysis with comments and attachments
 
 ### 🎓 Getting Started for Customers
 
@@ -409,6 +438,8 @@ SSA_KEY_PATH="/Users/brozp/aps-mcp-server-nodejs/8a4ee790-3378-44f3-bbab-5acb35e
   - Give me a visual dashboard of all issues in project XYZ
   - List all issues in my project
   - Show me the folder structure
+  - Get detailed information for issue [issue-id]
+  - Create a new issue titled "Test Issue" with status "open"
 
 **Example: Visual Dashboard Generation**
 
