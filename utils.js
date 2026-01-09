@@ -53,3 +53,90 @@ class ServiceAccountAuthenticationProvider {
 const serviceAccountAuthenticationProvider = new ServiceAccountAuthenticationProvider(["data:read", "data:write"]);
 export const dataManagementClient = new DataManagementClient({ authenticationProvider: serviceAccountAuthenticationProvider });
 export const issuesClient = new IssuesClient({ authenticationProvider: serviceAccountAuthenticationProvider });
+
+// RFI API Client - No SDK available, using direct REST API calls
+class RFIClient {
+    constructor(authenticationProvider) {
+        this._authProvider = authenticationProvider;
+        this._baseUrl = "https://developer.api.autodesk.com/construction/rfis/v3";
+    }
+
+    async _fetch(endpoint, options = {}) {
+        const token = await this._authProvider.getAccessToken();
+        const url = `${this._baseUrl}${endpoint}`;
+        const response = await fetch(url, {
+            ...options,
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json",
+                ...options.headers
+            }
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`RFI API Error (${response.status}): ${errorText}`);
+        }
+
+        return response.json();
+    }
+
+    async searchRFIs(projectId, filters = {}, limit = 25, offset = 0, query = null) {
+        // Build request body - pagination parameters go at root level, not nested
+        const requestBody = {
+            limit,
+            offset
+        };
+
+        // Only add filter if there are actual filter values
+        if (Object.keys(filters).length > 0) {
+            requestBody.filter = filters;
+        }
+
+        // Add query/search text inside filter object, not at root level
+        if (query) {
+            if (!requestBody.filter) requestBody.filter = {};
+            requestBody.filter.search = query;
+        }
+
+        return this._fetch(`/projects/${projectId}/search:rfis`, {
+            method: "POST",
+            body: JSON.stringify(requestBody)
+        });
+    }
+
+    async getRFIDetails(projectId, rfiId) {
+        return this._fetch(`/projects/${projectId}/rfis/${rfiId}`, {
+            method: "GET"
+        });
+    }
+
+    async createRFI(projectId, rfiData) {
+        return this._fetch(`/projects/${projectId}/rfis`, {
+            method: "POST",
+            body: JSON.stringify(rfiData)
+        });
+    }
+
+    async updateRFI(projectId, rfiId, updateData) {
+        return this._fetch(`/projects/${projectId}/rfis/${rfiId}`, {
+            method: "PATCH",
+            body: JSON.stringify(updateData)
+        });
+    }
+
+    async createResponse(projectId, rfiId, responseData) {
+        return this._fetch(`/projects/${projectId}/rfis/${rfiId}/responses`, {
+            method: "POST",
+            body: JSON.stringify(responseData)
+        });
+    }
+
+    async getRFITypes(projectId) {
+        return this._fetch(`/projects/${projectId}/rfi-types`, {
+            method: "GET"
+        });
+    }
+}
+
+export const rfiClient = new RFIClient(serviceAccountAuthenticationProvider);

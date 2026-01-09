@@ -29,7 +29,7 @@ The Model Context Protocol (MCP) creates a standardized way for AI assistants to
 
 ### Available MCP Tools
 
-This server provides 12 tools across multiple functional areas:
+This server provides **13 tools** across multiple functional areas:
 
 #### Projects & Files (2 tools)
 | Tool | Description | Parameters | Returns |
@@ -48,12 +48,13 @@ This server provides 12 tools across multiple functional areas:
 | **addIssueCommentTool** | Adds a comment to an issue | `projectId`, `issueId`, `body` | Comment confirmation with ID and timestamp |
 | **addIssueAttachmentTool** | Documents the process for adding attachments to issues | `projectId`, `issueId`, `fileName`, `fileUrl` | Documentation/guidance (placeholder - requires Data Management API) |
 
-#### Photos Module (3 tools) - Phase 3
-| Tool | Description | Status | Notes |
-|------|-------------|--------|-------|
-| **listPhotosTool** | Lists photos from an ACC project | Workaround Implementation | Currently lists issues with photo attachments as a placeholder until ACC Photos API is available |
-| **uploadPhotoTool** | Upload a photo to an ACC project | Documentation Only | Placeholder that documents the upload process requiring @aps_sdk/construction-photos and file handling |
-| **getPhotoDetailsTool** | Get detailed information about a specific photo | Documentation Only | Placeholder documenting photo metadata structure and workaround using getIssueDetails for attached photos |
+#### RFIs Management (4 tools)
+| Tool | Description | Parameters | Returns |
+|------|-------------|------------|---------|
+| **listRFIsTool** | Retrieves all RFIs (Requests for Information) from a project | `projectId`, optional filters: `searchText`, `status`, `assignedTo`, `limit`, `offset` | List of RFIs with IDs, titles, questions, statuses, assignments, and due dates |
+| **getRFITypesTool** | Gets available RFI types and categories | `projectId` | List of RFI types for classification |
+| **getRFIDetailsTool** | Retrieves detailed information about a specific RFI | `projectId`, `rfiId` | Complete RFI details including question, responses, attachments, workflow history, and linked documents |
+| **createRFITool** | Creates a new RFI in a project | `projectId`, `title`, `question`, `dueDate`, `assignedTo`, and optional fields | Created RFI with full details including ID and timestamps |
 
 ### VS Code MCP Client Integration
 
@@ -80,6 +81,12 @@ Copilot: [calls getIssueDetailsTool] → "Issue: Concrete Surface Finish... Stat
 
 You: "Create a new issue for the Level 2 rework"
 Copilot: [calls createIssueTool] → "✅ Issue created successfully! ID: xyz789..."
+
+You: "List all RFIs in my project"
+Copilot: [calls listRFIsTool] → "You have 5 RFIs: 2 open, 3 answered..."
+
+You: "Create an RFI about the concrete specifications"
+Copilot: [calls createRFITool] → "✅ RFI created successfully! ID: rfi-001..."
 ```
 
 ### Comparison with ACC Native Features
