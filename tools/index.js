@@ -4,3 +4,6 @@ export { getIssuesTool } from "./get-issues.js";
 export { getIssueTypesTool } from "./get-issue-types.js";
 export { createIssueTool } from "./create-issue.js";
 export { getIssueDetailsTool } from "./get-issue-details.js";
+export { updateIssueTool } from "./update-issue.js";
+export { addIssueCommentTool } from "./add-issue-comment.js";
+export { addIssueAttachmentTool } from "./add-issue-attachment.js";
