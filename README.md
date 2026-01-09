@@ -29,24 +29,31 @@ The Model Context Protocol (MCP) creates a standardized way for AI assistants to
 
 ### Available MCP Tools
 
-This server provides 9 tools that AI assistants can use:
+This server provides 12 tools across multiple functional areas:
 
-#### **Project & File Management (2 tools)**
+#### Projects & Files (2 tools)
 | Tool | Description | Parameters | Returns |
 |------|-------------|------------|---------|
 | **getProjectsTool** | Retrieves all ACC accounts and projects accessible to your service account | None | List of accounts with nested projects (IDs and names) |
 | **getFolderContentsTool** | Browses folder and file structure within a project | `accountId`, `projectId`, `folderId` (optional) | List of folders and files with IDs and display names |
 
-#### **Issues Management (7 tools)**
+#### Issues Management (7 tools)
 | Tool | Description | Parameters | Returns |
 |------|-------------|------------|---------|
 | **getIssuesTool** | Fetches all issues from a project | `projectId` | List of issues with IDs, titles, statuses, types, assignments, due dates, and 3D coordinates |
 | **getIssueTypesTool** | Gets available issue types and subtypes | `projectId` | List of issue types with subtypes (for issue classification) |
-| **getIssueDetailsTool** | Retrieves detailed information about a specific issue | `projectId`, `issueId`, `includeComments` (optional), `includeAttachments` (optional) | Complete issue details including description, assignee, dates, location, comments, attachments, custom attributes, and audit trail |
 | **createIssueTool** | Creates a new issue in a project | `projectId`, `title`, `issueSubtypeId`, `status`, and many optional fields | Created issue with full details including ID, display ID, and timestamps |
-| **updateIssueTool** | Updates an existing issue's properties | `projectId`, `issueId`, and optional fields to update | Updated issue with modified fields and timestamps |
-| **addIssueCommentTool** | Adds a comment to an issue | `projectId`, `issueId`, `body` | Created comment with ID, timestamp, and author |
-| **addIssueAttachmentTool** | Links files to an issue (requires file URN) | `projectId`, `issueId`, `urn`, `name` (optional) | Guidance on attaching files via Data Management API |
+| **getIssueDetailsTool** | Retrieves detailed information about a specific issue | `projectId`, `issueId`, `includeComments`, `includeAttachments` | Complete issue details including description, assignee, dates, location, comments, attachments, custom attributes, and audit trail |
+| **updateIssueTool** | Updates an existing issue | `projectId`, `issueId`, plus any fields to update | Updated issue details |
+| **addIssueCommentTool** | Adds a comment to an issue | `projectId`, `issueId`, `body` | Comment confirmation with ID and timestamp |
+| **addIssueAttachmentTool** | Documents the process for adding attachments to issues | `projectId`, `issueId`, `fileName`, `fileUrl` | Documentation/guidance (placeholder - requires Data Management API) |
+
+#### Photos Module (3 tools) - Phase 3
+| Tool | Description | Status | Notes |
+|------|-------------|--------|-------|
+| **listPhotosTool** | Lists photos from an ACC project | Workaround Implementation | Currently lists issues with photo attachments as a placeholder until ACC Photos API is available |
+| **uploadPhotoTool** | Upload a photo to an ACC project | Documentation Only | Placeholder that documents the upload process requiring @aps_sdk/construction-photos and file handling |
+| **getPhotoDetailsTool** | Get detailed information about a specific photo | Documentation Only | Placeholder documenting photo metadata structure and workaround using getIssueDetails for attached photos |
 
 ### VS Code MCP Client Integration
 
@@ -73,12 +80,6 @@ Copilot: [calls getIssueDetailsTool] → "Issue: Concrete Surface Finish... Stat
 
 You: "Create a new issue for the Level 2 rework"
 Copilot: [calls createIssueTool] → "✅ Issue created successfully! ID: xyz789..."
-
-You: "Update issue xyz789 status to in_progress"
-Copilot: [calls updateIssueTool] → "✅ Issue updated successfully! Status: in_progress..."
-
-You: "Add a comment to issue xyz789: Work started today"
-Copilot: [calls addIssueCommentTool] → "✅ Comment added successfully!"
 ```
 
 ### Comparison with ACC Native Features
@@ -89,15 +90,13 @@ Copilot: [calls addIssueCommentTool] → "✅ Comment added successfully!"
 | **Query Interface** | GUI navigation | Conversational AI | Conversational AI |
 | **Integration** | Standalone app | Standalone app | Embedded in VS Code/Claude/Cursor |
 | **Authentication** | User login | User login | Service Account (programmatic) |
-| **Data Access** | Full ACC features | Limited to conversation context | API-based (full read/write for issues) |
+| **Data Access** | Full ACC features | Limited to conversation context | API-based (read and write access) |
 | **Customization** | Fixed UI | Fixed AI behavior | Custom tools & scripts |
 | **Use Case** | Manual project management | Quick queries & assistance | Developer workflows & automation |
 | **Multi-Project** | Switch between projects | Context limited | Access all authorized projects |
 | **Offline Mode** | ❌ No | ❌ No | ❌ No (requires API) |
-| **File Upload** | ✅ Yes | ✅ Yes | ⚠️ Partial (via Data Management API) |
-| **Issue Creation** | ✅ Yes | ✅ Yes | ✅ Yes (fully implemented) |
-| **Issue Updates** | ✅ Yes | ✅ Yes | ✅ Yes (fully implemented) |
-| **Issue Comments** | ✅ Yes | ✅ Yes | ✅ Yes (fully implemented) |
+| **File Upload** | ✅ Yes | ✅ Yes | ❌ No (read-only for files) |
+| **Issue Creation** | ✅ Yes | ✅ Yes | ✅ Yes (implemented) |
 | **Real-time Collaboration** | ✅ Yes | Limited | ❌ No |
 
 **Key Differences:**
@@ -456,8 +455,6 @@ SSA_KEY_PATH="/Users/brozp/aps-mcp-server-nodejs/8a4ee790-3378-44f3-bbab-5acb35e
   - Show me the folder structure
   - Get detailed information for issue [issue-id]
   - Create a new issue titled "Test Issue" with status "open"
-  - Update issue [issue-id] to status "in_progress"
-  - Add a comment to issue [issue-id]: "Work in progress"
 
 **Example: Visual Dashboard Generation**
 

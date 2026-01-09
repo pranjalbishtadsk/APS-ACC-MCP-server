@@ -373,3 +373,87 @@ After testing these tools, consider:
 - [ACC Issues API Documentation](https://aps.autodesk.com/en/docs/acc/v1/reference/http/issues-v1-projects-projectId-issues-POST/)
 - [MCP Protocol Documentation](https://modelcontextprotocol.io/)
 - [APS SDK GitHub](https://github.com/autodesk-platform-services)
+
+---
+
+##  Phase 3: Photos Module Testing
+
+### 8. List Photos (listPhotosTool) - Workaround Implementation
+
+**Note:** This is a workaround implementation that lists issues with photo attachments until ACC Photos API is available.
+
+**Basic List Prompts:**
+\\\
+"List photos from project [PROJECT_ID]"
+"Show me all photos in my project"
+"What photos are available?"
+\\\
+
+**With Limit:**
+\\\
+"List the first 10 photos from project [PROJECT_ID]"
+"Show me 50 photos from my project"
+\\\
+
+**Example Specific Prompt:**
+\\\
+"List photos from project 9e7d8e6a-79e8-428e-83a7-dfd2e778fe35 with limit 25"
+\\\
+
+**Expected Output:**
+- Note about workaround implementation
+- Count of issues with attachments found
+- List of issues with photo attachments including:
+  - Issue ID
+  - Title
+  - Attachment count
+  - Created date and creator
+- Implementation notes about future Photos API
+
+---
+
+### 9. Upload Photo (uploadPhotoTool) - Documentation Only
+
+**Note:** This is a documentation tool explaining the photo upload process.
+
+**Conceptual Prompts:**
+\\\
+"Upload photo from C:\\Photos\\site-photo.jpg to project [PROJECT_ID]"
+"How do I upload a site photo?"
+"What's the process for adding photos to my project?"
+\\\
+
+**Expected Output:**
+- Status: NOT_IMPLEMENTED
+- Implementation guidance with 3 steps
+- Alternative methods (ACC Mobile App, ACC Web Interface)
+- Required scopes and packages
+
+---
+
+### 10. Get Photo Details (getPhotoDetailsTool) - Documentation Only
+
+**Conceptual Prompts:**
+\\\
+"Get details for photo [PHOTO_ID] in project [PROJECT_ID]"
+"Show me full information about photo abc123"
+\\\
+
+**Expected Output:**
+- Status: NOT_IMPLEMENTED
+- Workaround suggestion: Use getIssueDetails for photos attached to issues
+- Full implementation example showing available metadata
+- Required package: @aps_sdk/construction-photos
+
+---
+
+## Note on Photos Module
+
+**Phase 3 Status:** Implemented with placeholders awaiting @aps_sdk/construction-photos SDK.
+
+- listPhotosTool: Workaround using Issues API to find attachments
+- uploadPhotoTool: Documentation tool explaining upload process
+- getPhotoDetailsTool: Documentation tool with metadata structure
+
+**Current Workflow:** Use getIssueDetails with includeAttachments: true to view photos attached to issues.
+

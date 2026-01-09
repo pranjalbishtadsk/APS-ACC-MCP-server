@@ -7,3 +7,6 @@ export { getIssueDetailsTool } from "./get-issue-details.js";
 export { updateIssueTool } from "./update-issue.js";
 export { addIssueCommentTool } from "./add-issue-comment.js";
 export { addIssueAttachmentTool } from "./add-issue-attachment.js";
+export { listPhotosTool } from "./list-photos.js";
+export { uploadPhotoTool } from "./upload-photo.js";
+export { getPhotoDetailsTool } from "./get-photo-details.js";
