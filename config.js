@@ -5,10 +5,27 @@ import dotenv from "dotenv";
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.resolve(__dirname, ".env"), quiet: true });
-const { APS_CLIENT_ID, APS_CLIENT_SECRET, SSA_ID, SSA_KEY_ID, SSA_KEY_PATH } = process.env;
+const {
+    APS_CLIENT_ID,
+    APS_CLIENT_SECRET,
+    SSA_ID,
+    SSA_KEY_ID,
+    SSA_KEY_PATH,
+    OAUTH_CLIENT_ID,
+    OAUTH_CLIENT_SECRET,
+    OAUTH_CALLBACK_URL
+} = process.env;
+
+// Service Account credentials (required)
 if (!APS_CLIENT_ID || !APS_CLIENT_SECRET || !SSA_ID || !SSA_KEY_ID || !SSA_KEY_PATH) {
     console.error("Missing one or more required environment variables: APS_CLIENT_ID, APS_CLIENT_SECRET, SSA_ID, SSA_KEY_ID, SSA_KEY_PATH");
     process.exit(1);
+}
+
+// 3-Legged OAuth credentials (optional, required only for Photos API)
+const hasOAuthConfig = OAUTH_CLIENT_ID && OAUTH_CLIENT_SECRET && OAUTH_CALLBACK_URL;
+if (!hasOAuthConfig) {
+    console.warn("Warning: 3-Legged OAuth credentials not configured. Photos API will not be available.");
 }
 
 export {
@@ -16,5 +33,8 @@ export {
     APS_CLIENT_SECRET,
     SSA_ID,
     SSA_KEY_ID,
-    SSA_KEY_PATH
+    SSA_KEY_PATH,
+    OAUTH_CLIENT_ID,
+    OAUTH_CLIENT_SECRET,
+    OAUTH_CALLBACK_URL
 }

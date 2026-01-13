@@ -29,7 +29,7 @@ The Model Context Protocol (MCP) creates a standardized way for AI assistants to
 
 ### Available MCP Tools
 
-This server provides **13 tools** across multiple functional areas:
+This server provides **15 tools** across multiple functional areas:
 
 #### Projects & Files (2 tools)
 | Tool | Description | Parameters | Returns |
@@ -55,6 +55,14 @@ This server provides **13 tools** across multiple functional areas:
 | **getRFITypesTool** | Gets available RFI types and categories | `projectId` | List of RFI types for classification |
 | **getRFIDetailsTool** | Retrieves detailed information about a specific RFI | `projectId`, `rfiId` | Complete RFI details including question, responses, attachments, workflow history, and linked documents |
 | **createRFITool** | Creates a new RFI in a project | `projectId`, `title`, `question`, `dueDate`, `assignedTo`, and optional fields | Created RFI with full details including ID and timestamps |
+
+#### Photos Management (2 tools)
+| Tool | Description | Parameters | Returns |
+|------|-------------|------------|---------|
+| **listPhotosTool** | Retrieves photos and videos from a project with filtering | `projectId`, optional: `createdFrom`, `createdTo`, `mediaType`, `limit`, `offset` | List of photos/videos with IDs, names, types, creation dates, and URLs |
+| **getPhotoDetailsTool** | Retrieves detailed information about a specific photo or video | `projectId`, `photoId` | Complete photo/video details including metadata, location, tags, and custom attributes |
+
+**Note:** Photos tools require 3-legged OAuth authentication. Run `npm run oauth-login` before using these tools. See [OAUTH_SETUP.md](OAUTH_SETUP.md) for details.
 
 ### VS Code MCP Client Integration
 
@@ -87,6 +95,12 @@ Copilot: [calls listRFIsTool] → "You have 5 RFIs: 2 open, 3 answered..."
 
 You: "Create an RFI about the concrete specifications"
 Copilot: [calls createRFITool] → "✅ RFI created successfully! ID: rfi-001..."
+
+You: "Show me photos from this project"
+Copilot: [calls listPhotosTool] → "Found 12 photos: Site inspection, Foundation work..."
+
+You: "Get details of photo abc123"
+Copilot: [calls getPhotoDetailsTool] → "Photo: Site Inspection... Created: 2025-01-10..."
 ```
 
 ### Comparison with ACC Native Features

@@ -16,3 +16,7 @@ export { listRFIsTool } from "./list-rfis.js";
 export { getRFITypesTool } from "./get-rfi-types.js";
 export { getRFIDetailsTool } from "./get-rfi-details.js";
 export { createRFITool } from "./create-rfi.js";
+
+// Photos
+export { listPhotosTool } from "./list-photos.js";
+export { getPhotoDetailsTool } from "./get-photo-details.js";

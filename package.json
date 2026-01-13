@@ -5,6 +5,9 @@
   "private": true,
   "description": "Simple Model Context Protocol server built with Node.js, providing access to Autodesk Platform Services API, with fine-grained access control using Secure Service Accounts.",
   "author": "Petr Broz <petr.broz@autodesk.com>",
+  "scripts": {
+    "oauth-login": "node oauth-login.js"
+  },
   "dependencies": {
     "@aps_sdk/construction-issues": "^1.1.0",
     "@aps_sdk/data-management": "^1.1.2",
