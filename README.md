@@ -29,7 +29,7 @@ The Model Context Protocol (MCP) creates a standardized way for AI assistants to
 
 ### Available MCP Tools
 
-This server provides **16 tools** across multiple functional areas:
+This server provides **15 tools** across multiple functional areas:
 
 #### Projects & Files (2 tools)
 | Tool | Description | Parameters | Returns |
@@ -56,14 +56,14 @@ This server provides **16 tools** across multiple functional areas:
 | **getRFIDetailsTool** | Retrieves detailed information about a specific RFI | `projectId`, `rfiId` | Complete RFI details including question, responses, attachments, workflow history, and linked documents |
 | **createRFITool** | Creates a new RFI in a project | `projectId`, `title`, `question`, `dueDate`, `assignedTo`, and optional fields | Created RFI with full details including ID and timestamps |
 
-#### Photos Management (3 tools) ⭐
+#### Photos Management (2 tools) - Read-Only
 | Tool | Description | Parameters | Returns |
 |------|-------------|------------|---------|
 | **listPhotosTool** | Retrieves photos and videos from a project with filtering | `projectId`, optional: `createdFrom`, `createdTo`, `mediaType`, `limit`, `offset` | List of photos/videos with IDs, names, types, creation dates, and URLs |
 | **getPhotoDetailsTool** | Retrieves detailed information about a specific photo or video | `projectId`, `photoId` | Complete photo/video details including metadata, location, tags, and custom attributes |
-| **uploadPhotoTool** | Uploads a photo or video to a project | `projectId`, `filePath`, optional: `title`, `description`, `location`, `tags` | Upload confirmation with photo ID, name, URLs, and metadata |
 
 **Note:** Photos tools require 3-legged OAuth authentication. Run `npm run oauth-login` before using these tools. See [OAUTH_SETUP.md](OAUTH_SETUP.md) for details.
+**Important:** ACC Photos API v1 is read-only. Photo uploads must be done through ACC Mobile App or Web Interface.
 
 ### VS Code MCP Client Integration
 

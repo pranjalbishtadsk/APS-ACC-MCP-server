@@ -370,56 +370,6 @@ class PhotosClient {
             method: "GET"
         });
     }
-
-    async uploadPhoto(projectId, fileBuffer, fileName, metadata = {}) {
-        if (!this._authProvider) {
-            throw new Error("Photos API requires 3-legged OAuth authentication. Please configure OAUTH_CLIENT_ID, OAUTH_CLIENT_SECRET, and OAUTH_CALLBACK_URL in .env file.");
-        }
-
-        if (!this._authProvider.hasToken()) {
-            throw new Error("No OAuth token available. Please authenticate first by running 'npm run oauth-login'.");
-        }
-
-        const token = await this._authProvider.getAccessToken();
-        const url = `${this._baseUrl}/projects/${projectId}/photos`;
-
-        // Create FormData for multipart upload
-        const FormData = (await import('node:buffer')).Blob ? 
-            (await import('formdata-node')).FormData : 
-            require('form-data');
-        
-        const formData = new FormData();
-        
-        // Add file
-        const blob = new Blob([fileBuffer], { type: 'application/octet-stream' });
-        formData.append('file', blob, fileName);
-        
-        // Add metadata as JSON string
-        if (metadata.title || metadata.description || metadata.location || metadata.tags) {
-            const metadataObj = {};
-            if (metadata.title) metadataObj.title = metadata.title;
-            if (metadata.description) metadataObj.description = metadata.description;
-            if (metadata.location) metadataObj.location = metadata.location;
-            if (metadata.tags) metadataObj.tags = metadata.tags;
-            formData.append('metadata', JSON.stringify(metadataObj));
-        }
-
-        const response = await fetch(url, {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                // Don't set Content-Type - let fetch set it with boundary for multipart
-            },
-            body: formData
-        });
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`Photos API Error (${response.status}): ${errorText}`);
-        }
-
-        return response.json();
-    }
 }
 
 // Use 3-legged OAuth for Photos API (will be null if OAuth not configured)

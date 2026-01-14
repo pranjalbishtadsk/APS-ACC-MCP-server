@@ -20,4 +20,3 @@ export { createRFITool } from "./create-rfi.js";
 // Photos
 export { listPhotosTool } from "./list-photos.js";
 export { getPhotoDetailsTool } from "./get-photo-details.js";
-export { uploadPhotoTool } from "./upload-photo.js";
