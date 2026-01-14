@@ -374,3 +374,90 @@ class PhotosClient {
 
 // Use 3-legged OAuth for Photos API (will be null if OAuth not configured)
 export const photosClient = new PhotosClient(threeLeggedAuthProvider);
+
+// Submittals API Client - No SDK available, using direct REST API calls
+// Note: Submittals API v1 requires 3-legged OAuth (user context)
+class SubmittalsClient {
+    constructor(authenticationProvider) {
+        this._authProvider = authenticationProvider;
+        this._baseUrl = "https://developer.api.autodesk.com/construction/submittals/v1";
+    }
+
+    async _fetch(endpoint, options = {}) {
+        if (!this._authProvider) {
+            throw new Error("Submittals API requires 3-legged OAuth authentication. Please configure OAUTH_CLIENT_ID, OAUTH_CLIENT_SECRET, and OAUTH_CALLBACK_URL in .env file, then run: npm run oauth-login");
+        }
+
+        if (!this._authProvider.hasToken()) {
+            throw new Error("No OAuth token available. Please authenticate first by running: npm run oauth-login");
+        }
+
+        const token = await this._authProvider.getAccessToken();
+        const url = `${this._baseUrl}${endpoint}`;
+
+        console.log(`[Submittals API] ${options.method || 'GET'} ${url}`);
+
+        const response = await fetch(url, {
+            ...options,
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json",
+                ...options.headers
+            }
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error(`[Submittals API Error] ${response.status} ${response.statusText}: ${errorText}`);
+            throw new Error(`Submittals API Error (${response.status}): ${errorText}`);
+        }
+
+        return response.json();
+    }
+
+    async searchSubmittals(projectId, filters = {}, limit = 25, offset = 0) {
+        // Try using GET with query parameters - the API might use items endpoint
+        const params = new URLSearchParams();
+        params.append('limit', limit.toString());
+        params.append('offset', offset.toString());
+
+        // Add filters as query parameters
+        if (filters.status && Array.isArray(filters.status)) {
+            filters.status.forEach(s => params.append('status', s));
+        }
+        if (filters.type) params.append('type', filters.type);
+        if (filters.assignedTo) params.append('assignedTo', filters.assignedTo);
+
+        return this._fetch(`/projects/${projectId}/items?${params.toString()}`, {
+            method: "GET"
+        });
+    }
+
+    async getSubmittalDetails(projectId, submittalId) {
+        return this._fetch(`/projects/${projectId}/items/${submittalId}`, {
+            method: "GET"
+        });
+    }
+
+    async createSubmittal(projectId, submittalData) {
+        return this._fetch(`/projects/${projectId}/items`, {
+            method: "POST",
+            body: JSON.stringify(submittalData)
+        });
+    }
+
+    async updateSubmittal(projectId, submittalId, updateData) {
+        return this._fetch(`/projects/${projectId}/items/${submittalId}`, {
+            method: "PATCH",
+            body: JSON.stringify(updateData)
+        });
+    }
+
+    async getSubmittalTypes(projectId) {
+        return this._fetch(`/projects/${projectId}/item-types`, {
+            method: "GET"
+        });
+    }
+}
+
+export const submittalsClient = new SubmittalsClient(threeLeggedAuthProvider);

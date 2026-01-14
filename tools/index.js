@@ -20,3 +20,8 @@ export { createRFITool } from "./create-rfi.js";
 // Photos
 export { listPhotosTool } from "./list-photos.js";
 export { getPhotoDetailsTool } from "./get-photo-details.js";
+
+// Submittals
+export { listSubmittalsTool } from "./list-submittals.js";
+export { getSubmittalTypesTool } from "./get-submittal-types.js";
+export { createSubmittalTool } from "./create-submittal.js";

@@ -29,7 +29,7 @@ The Model Context Protocol (MCP) creates a standardized way for AI assistants to
 
 ### Available MCP Tools
 
-This server provides **15 tools** across multiple functional areas:
+This server provides **18 tools** across multiple functional areas:
 
 #### Projects & Files (2 tools)
 | Tool | Description | Parameters | Returns |
@@ -64,6 +64,15 @@ This server provides **15 tools** across multiple functional areas:
 
 **Note:** Photos tools require 3-legged OAuth authentication. Run `npm run oauth-login` before using these tools. See [OAUTH_SETUP.md](OAUTH_SETUP.md) for details.
 **Important:** ACC Photos API v1 is read-only. Photo uploads must be done through ACC Mobile App or Web Interface.
+
+#### Submittals Management (3 tools) ⭐
+| Tool | Description | Parameters | Returns |
+|------|-------------|------------|---------|
+| **listSubmittalsTool** | Retrieves all submittals from a project with filtering | `projectId`, optional: `status`, `type`, `assignedTo`, `limit`, `offset` | List of submittals with IDs, numbers, titles, statuses, types, due dates, and assignments |
+| **getSubmittalTypesTool** | Gets available submittal types configured in the project | `projectId` | List of submittal types with IDs, names, codes, and workflows |
+| **createSubmittalTool** | Creates a new submittal in a project | `projectId`, `title`, `submittalTypeId`, `dueDate`, optional: `number`, `description`, `assignedTo`, `status` | Created submittal with full details including ID, number, status, and timestamps |
+
+**Note:** Submittals tools require 3-legged OAuth authentication. Run `npm run oauth-login` before using these tools. See [OAUTH_SETUP.md](OAUTH_SETUP.md) for details.
 
 ### VS Code MCP Client Integration
 
